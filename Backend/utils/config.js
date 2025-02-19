@@ -1,4 +1,4 @@
-require('dotenv').config()
+require('dotenv').config({ path: '../.env'})
 
 const PORT = process.env.PORT
 const MONGODB_URI =

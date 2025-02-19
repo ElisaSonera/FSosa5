@@ -1,0 +1,11 @@
+POST http://localhost:3003/api/blogs
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImtrYXl0dGFqYSIsImlkIjoiNjdiNDYyYWUwODY2OGI1MTYxMjRkNDg2IiwiaWF0IjoxNzM5ODc1MDMzLCJleHAiOjE3Mzk4Nzg2MzN9.I1hQHkK1YSaLztbxDCXvYcODycNBH3I10Kw81lTi65I
+
+{
+  "title": "Blogger",
+  "author": "Telia",
+  "url": "http://eimikään.fi",
+  "likes": 13,
+  "userId": "67b462ae08668b516124d486"
+}

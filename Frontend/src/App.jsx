@@ -29,15 +29,13 @@ const App = () => {
       title: String,
       author: String,
       url: String,
-      likes: Number,
+      likes: Number
     }
-  
-    blogService
-      .create(blogObject)
-        .then(returnedBlog => {
-        setBlogs(blogs.concat(returnedBlog))
-        setNewBlog('')
-      })
+
+    blogService.create(blogObject).then((returnedBlog) => {
+      setBlogs(blogs.concat(returnedBlog))
+      setNewBlog('')
+    })
   }
 
   const handleBlogChange = (event) => {
@@ -65,6 +63,11 @@ const App = () => {
         setErrorMessage(null)
       }, 5000)
     }
+  }
+
+  const handleLogout = () => {
+    window.localStorage.clear()
+    setUser(null)
   }
 
   const loginForm = () => (
@@ -98,20 +101,27 @@ const App = () => {
     </form>
   )
 
+  if (user === null) {
+    return (
+      <div>
+        <h2>Log in to application</h2>
+        {!user && loginForm()}
+      </div>
+    )
+  }
+
   return (
     <div>
-      <h1>Full stack open - part 5</h1>
+      <h2>blogs</h2>
 
-      <h2>Login</h2>
-      {!user && loginForm()}
       {user && (
         <div>
           <p>{user.name} logged in</p>
+          <button onClick={handleLogout}>logout</button>
           {blogForm()}
         </div>
       )}
 
-      <h2>blogs</h2>
       {blogs.map((blog) => (
         <Blog key={blog.id} blog={blog} />
       ))}

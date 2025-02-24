@@ -1,7 +1,10 @@
 import View from './View'
 import blogService from '../services/blogs'
+import { useState } from 'react'
 
 const Blog = ({ blog }) => {
+  const [likesUpdate, setLikesUpdate] = useState(blog.likes)
+
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
@@ -17,11 +20,12 @@ const Blog = ({ blog }) => {
       title: blog.title,
       author: blog.author,
       url: blog.url,
-      likes: blog.likes + 1,
+      likes: likesUpdate + 1,
       user: blog.user._id
     }
 
     await blogService.update(blog.id, blogObject)
+    setLikesUpdate(likesUpdate + 1)
   }
 
   return (
@@ -30,7 +34,7 @@ const Blog = ({ blog }) => {
       <View buttonLabel="view">
         <div>{blog.url}</div>
         <div>
-          {blog.likes}
+          {likesUpdate}
           <button onClick={handleLike}>like</button>
         </div>
         <div>{blog.user.username}</div>

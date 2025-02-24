@@ -44,12 +44,6 @@ const App = () => {
     })
   }
 
-  const blogView = async (event) => {
-    event.preventDefault()
-
-
-  }
-
   const handleLogin = async (event) => {
     event.preventDefault()
 
@@ -129,7 +123,7 @@ const App = () => {
       )}
 
       {blogs.map((blog) => (
-        <Blog key={blog.id} blog={blog} blogView={blogView} />
+        <Blog key={blog.id} blog={blog} />
       ))}
     </div>
   )

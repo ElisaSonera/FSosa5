@@ -44,6 +44,12 @@ const App = () => {
     })
   }
 
+  const compareLikes = (firstBlog, secondBlog) => {
+    return secondBlog.likes - firstBlog.likes
+  }
+
+  const sortedBlogs = blogs.sort(compareLikes)
+
   const handleLogin = async (event) => {
     event.preventDefault()
 
@@ -71,12 +77,6 @@ const App = () => {
     window.localStorage.clear()
     setUser(null)
   }
-
-  const compareLikes = (firstBlog, secondBlog) => {
-    return secondBlog.likes - firstBlog.likes 
-  }
-
-  const sortedBlogs = blogs.sort(compareLikes)
 
   const loginForm = () => {
     return (
@@ -131,8 +131,6 @@ const App = () => {
       {sortedBlogs.map((blog) => (
         <Blog key={blog.id} blog={blog} />
       ))}
-      
-      
     </div>
   )
 }

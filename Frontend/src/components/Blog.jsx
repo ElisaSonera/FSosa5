@@ -28,6 +28,15 @@ const Blog = ({ blog }) => {
     setLikesUpdate(likesUpdate + 1)
   }
 
+  const handleRemove = async (event) => {
+    event.preventDefault()
+    if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
+      await blogService.remove(blog.id)
+    } else {
+      return
+    }
+  }
+
   return (
     <div style={blogStyle}>
       {blog.title} {blog.author}
@@ -38,6 +47,9 @@ const Blog = ({ blog }) => {
           <button onClick={handleLike}>like</button>
         </div>
         <div>{blog.user.username}</div>
+        <div>
+          <button onClick={handleRemove}>remove</button>
+        </div>
       </View>
     </div>
   )

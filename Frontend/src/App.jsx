@@ -72,6 +72,12 @@ const App = () => {
     setUser(null)
   }
 
+  const compareLikes = (firstBlog, secondBlog) => {
+    return secondBlog.likes - firstBlog.likes 
+  }
+
+  const sortedBlogs = blogs.sort(compareLikes)
+
   const loginForm = () => {
     return (
       <div>
@@ -122,9 +128,11 @@ const App = () => {
         </div>
       )}
 
-      {blogs.map((blog) => (
+      {sortedBlogs.map((blog) => (
         <Blog key={blog.id} blog={blog} />
       ))}
+      
+      
     </div>
   )
 }

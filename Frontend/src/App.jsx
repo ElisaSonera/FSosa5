@@ -6,6 +6,7 @@ import Notification from './components/Notification'
 import './index.css'
 import LoginForm from './components/LoginForm'
 import Togglable from './components/Togglable'
+import BlogForm from './components/BlogForm'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -89,10 +90,19 @@ const App = () => {
     setUser(null)
   }
 
-  const loginForm = () => {
-    const hideWhenVisible = { display: loginVisible ? 'none' : '' }
-    const showWhenVisible = { display: loginVisible ? '' : 'none' }
+  const handleTitleChange = (event) => {
+    setBlogTitle(event.target.value)
+  }
 
+  const handleAuthorChange = (event) => {
+    setBlogAuthor(event.target.value)
+  }
+
+  const handleUrlChange = (event) => {
+    setBlogUrl(event.target.value)
+  }
+
+  const loginForm = () => {
     return (
       <div>
         <Togglable buttonLabel="login">
@@ -108,41 +118,23 @@ const App = () => {
     )
   }
 
-  const blogForm = () => (
-    <form onSubmit={addBlog}>
+  const blogForm = () => {
+    return (
       <div>
-        title:
-        <input
-          type="text"
-          value={blogTitle}
-          name="title"
-          onChange={({ target }) => setBlogTitle(target.value)}
-        />
+        <Togglable buttonLabel="new blog">
+          <BlogForm
+            onSubmit={addBlog}
+            titleValue={blogTitle}
+            authorValue={blogAuthor}
+            urlValue={blogUrl}
+            handleTitleChange={handleTitleChange}
+            handleAuthorChange={handleAuthorChange}
+            handleUrlChange={handleUrlChange}
+          />
+        </Togglable>
       </div>
-
-      <div>
-        author:
-        <input
-          type="text"
-          value={blogAuthor}
-          name="author"
-          onChange={({ target }) => setBlogAuthor(target.value)}
-        />
-      </div>
-
-      <div>
-        url:
-        <input
-          type="text"
-          value={blogUrl}
-          name="url"
-          onChange={({ target }) => setBlogUrl(target.value)}
-        />
-      </div>
-
-      <button type="submit">create</button>
-    </form>
-  )
+    )
+  }
 
   if (user === null) {
     return (

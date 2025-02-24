@@ -44,6 +44,12 @@ const App = () => {
     })
   }
 
+  const blogView = async (event) => {
+    event.preventDefault()
+
+
+  }
+
   const handleLogin = async (event) => {
     event.preventDefault()
 
@@ -91,17 +97,8 @@ const App = () => {
   const blogForm = () => {
     return (
       <div>
-        <Togglable buttonLabel="new blog" ref={blogFormRef}>
+        <Togglable buttonLabel="create new blog" ref={blogFormRef}>
           <BlogForm createBlog={addBlog} />
-          {/* <BlogForm
-            onSubmit={addBlog}
-            titleValue={blogTitle}
-            authorValue={blogAuthor}
-            urlValue={blogUrl}
-            handleTitleChange={handleTitleChange}
-            handleAuthorChange={handleAuthorChange}
-            handleUrlChange={handleUrlChange}
-          /> */}
         </Togglable>
       </div>
     )
@@ -132,7 +129,7 @@ const App = () => {
       )}
 
       {blogs.map((blog) => (
-        <Blog key={blog.id} blog={blog} />
+        <Blog key={blog.id} blog={blog} blogView={blogView} />
       ))}
     </div>
   )

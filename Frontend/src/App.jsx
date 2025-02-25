@@ -45,10 +45,9 @@ const App = () => {
     })
   }
 
-
   const removeBlog = (blogObject) => {
     blogService.remove(blogObject.id).then(() => {
-      setBlogs(blogs.filter(blog => blog.id !== blogObject.id))
+      setBlogs(blogs.filter((blog) => blog.id !== blogObject.id))
     })
   }
 
@@ -59,7 +58,9 @@ const App = () => {
   const sortedBlogs = blogs.sort(compareLikes)
 
   const mapBlogs = (blogList) => {
-    return blogList.map((blog) => <Blog key={blog.id} blog={blog} removeBlog={removeBlog} user={user}/>)
+    return blogList.map((blog) => (
+      <Blog key={blog.id} blog={blog} removeBlog={removeBlog} user={user} />
+    ))
   }
 
   const handleLogin = async (event) => {
@@ -139,10 +140,6 @@ const App = () => {
           {blogForm()}
         </div>
       )}
-
-      {/* {sortedBlogs.map((blog) => (
-        <Blog key={blog.id} blog={blog} />
-      ))} */}
 
       {mapBlogs(sortedBlogs)}
     </div>

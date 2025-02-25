@@ -29,4 +29,6 @@ const View = forwardRef((props, ref) => {
   )
 })
 
+View.displayName = 'View'
+
 export default View

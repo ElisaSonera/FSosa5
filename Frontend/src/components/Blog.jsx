@@ -51,8 +51,8 @@ const Blog = ({ blog, removeBlog, user }) => {
         <div>{blog.user.username}</div>
         {blogOwner && (
           <div>
-          <button onClick={handleRemove}>remove</button>
-        </div>
+            <button onClick={handleRemove}>remove</button>
+          </div>
         )}
       </View>
     </div>

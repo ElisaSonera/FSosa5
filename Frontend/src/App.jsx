@@ -7,6 +7,7 @@ import './index.css'
 import LoginForm from './components/LoginForm'
 import Togglable from './components/Togglable'
 import BlogForm from './components/BlogForm'
+import blogs from './services/blogs'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -44,11 +45,22 @@ const App = () => {
     })
   }
 
+
+  const removeBlog = (blogObject) => {
+    blogService.remove(blogObject.id).then(() => {
+      setBlogs(blogs.filter(blog => blog.id !== blogObject.id))
+    })
+  }
+
   const compareLikes = (firstBlog, secondBlog) => {
     return secondBlog.likes - firstBlog.likes
   }
 
   const sortedBlogs = blogs.sort(compareLikes)
+
+  const mapBlogs = (blogList) => {
+    return blogList.map((blog) => <Blog key={blog.id} blog={blog} removeBlog={removeBlog} user={user}/>)
+  }
 
   const handleLogin = async (event) => {
     event.preventDefault()
@@ -128,9 +140,11 @@ const App = () => {
         </div>
       )}
 
-      {sortedBlogs.map((blog) => (
+      {/* {sortedBlogs.map((blog) => (
         <Blog key={blog.id} blog={blog} />
-      ))}
+      ))} */}
+
+      {mapBlogs(sortedBlogs)}
     </div>
   )
 }

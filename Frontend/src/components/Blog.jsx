@@ -2,7 +2,7 @@ import View from './View'
 import blogService from '../services/blogs'
 import { useState } from 'react'
 
-const Blog = ({ blog }) => {
+const Blog = ({ blog, removeBlog, user }) => {
   const [likesUpdate, setLikesUpdate] = useState(blog.likes)
 
   const blogStyle = {
@@ -28,14 +28,16 @@ const Blog = ({ blog }) => {
     setLikesUpdate(likesUpdate + 1)
   }
 
-  const handleRemove = async (event) => {
+  const handleRemove = (event) => {
     event.preventDefault()
     if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
-      await blogService.remove(blog.id)
+      removeBlog(blog)
     } else {
       return
     }
   }
+
+  const blogOwner = user && blog.user.username === user.username
 
   return (
     <div style={blogStyle}>
@@ -47,9 +49,11 @@ const Blog = ({ blog }) => {
           <button onClick={handleLike}>like</button>
         </div>
         <div>{blog.user.username}</div>
-        <div>
+        {blogOwner && (
+          <div>
           <button onClick={handleRemove}>remove</button>
         </div>
+        )}
       </View>
     </div>
   )

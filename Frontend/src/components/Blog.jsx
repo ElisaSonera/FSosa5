@@ -40,7 +40,7 @@ const Blog = ({ blog, removeBlog, user }) => {
   const blogOwner = user && blog.user.username === user.username
 
   return (
-    <div style={blogStyle}>
+    <div style={blogStyle} className="blog">
       {blog.title} {blog.author}
       <View buttonLabel="view">
         <div>{blog.url}</div>

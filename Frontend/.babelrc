@@ -1,0 +1,9 @@
+{
+    "presets": [
+      "@babel/preset-env",
+      ["@babel/preset-react", { "runtime": "automatic" }]
+    ]
+  }
+
+  // En tiiä että mitä varten tämä on, mutta esimerkissä oli tämmöinen tiedosto
+  // Niin laitan nyt itsellenikin varmuuden vuoksi, jos vaikka missasin jotain

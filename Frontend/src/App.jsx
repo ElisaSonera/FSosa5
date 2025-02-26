@@ -45,6 +45,19 @@ const App = () => {
     })
   }
 
+  const likeBlog = async (blogObject) => {
+    const blog = {
+      title: blogObject.title,
+      author: blogObject.author,
+      url: blogObject.url,
+      likes: blogObject.likes + 1,
+      user: blogObject.user.id
+    }
+
+    await blogService.update(blogObject.id, blog)
+    setBlogs(blogs.map((b) => (b.id === blogObject.id ? blog : b)))
+  }
+
   const removeBlog = (blogObject) => {
     blogService.remove(blogObject.id).then(() => {
       setBlogs(blogs.filter((blog) => blog.id !== blogObject.id))
@@ -59,7 +72,13 @@ const App = () => {
 
   const mapBlogs = (blogList) => {
     return blogList.map((blog) => (
-      <Blog key={blog.id} blog={blog} removeBlog={removeBlog} user={user} />
+      <Blog
+        key={blog.id}
+        blog={blog}
+        likeBlog={likeBlog}
+        removeBlog={removeBlog}
+        user={user}
+      />
     ))
   }
 

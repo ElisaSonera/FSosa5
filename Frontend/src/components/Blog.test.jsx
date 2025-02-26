@@ -27,7 +27,7 @@ test('clicking the button calls event handler once', async () => {
         title: 'titteli',
         author: 'tekijä',
         url: 'osoite',
-        likes: 13,
+        likes: 0,
         user: {
           username: 'käyttis',
           name: 'joku',
@@ -42,7 +42,7 @@ test('clicking the button calls event handler once', async () => {
     )
   
     const user = userEvent.setup()
-    const button = screen.getByText('osoite')
+    const button = screen.getByText('like')
     await user.click(button)
   
     expect(mockHandler.mock.calls).toHaveLength(1)

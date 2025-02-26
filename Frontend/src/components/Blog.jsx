@@ -2,7 +2,7 @@ import View from './View'
 import blogService from '../services/blogs'
 import { useState } from 'react'
 
-const Blog = ({ blog, removeBlog, user }) => {
+const Blog = ({ blog, likeBlog, removeBlog, user }) => {
   const [likesUpdate, setLikesUpdate] = useState(blog.likes)
 
   const blogStyle = {
@@ -15,16 +15,7 @@ const Blog = ({ blog, removeBlog, user }) => {
 
   const handleLike = async (event) => {
     event.preventDefault()
-
-    const blogObject = {
-      title: blog.title,
-      author: blog.author,
-      url: blog.url,
-      likes: likesUpdate + 1,
-      user: blog.user._id
-    }
-
-    await blogService.update(blog.id, blogObject)
+    await likeBlog(blog)
     setLikesUpdate(likesUpdate + 1)
   }
 

@@ -51,11 +51,10 @@ const App = () => {
       author: blogObject.author,
       url: blogObject.url,
       likes: blogObject.likes + 1,
-      user: blogObject.user.id
+      user: blogObject.user.id || blogObject.user._id
     }
 
     await blogService.update(blogObject.id, blog)
-    setBlogs(blogs.map((b) => (b.id === blogObject.id ? blog : b)))
   }
 
   const removeBlog = (blogObject) => {

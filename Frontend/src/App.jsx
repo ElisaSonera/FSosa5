@@ -57,10 +57,9 @@ const App = () => {
     await blogService.update(blogObject.id, blog)
   }
 
-  const removeBlog = (blogObject) => {
-    blogService.remove(blogObject.id).then(() => {
-      setBlogs(blogs.filter((blog) => blog.id !== blogObject.id))
-    })
+  const removeBlog = async (blogObject) => {
+    await blogService.remove(blogObject.id)
+    setBlogs(blogs.filter((blog) => blog.id !== blogObject.id))
   }
 
   const compareLikes = (firstBlog, secondBlog) => {

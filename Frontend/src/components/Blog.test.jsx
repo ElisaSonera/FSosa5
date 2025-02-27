@@ -22,29 +22,6 @@ test('renders title', () => {
   expect(element).toBeDefined()
 })
 
-test('clicking the like button calls event handler once', async () => {
-  const blog = {
-    title: 'titteli',
-    author: 'tekijä',
-    url: 'osoite',
-    likes: 0,
-    user: {
-      username: 'käyttis',
-      name: 'joku',
-      password: 'salasana'
-    }
-  }
-
-  const mockHandler = vi.fn()
-
-  render(<Blog blog={blog} likeBlog={mockHandler} />)
-
-  const user = userEvent.setup()
-  const button = screen.getByText('like')
-  await user.click(button)
-
-  expect(mockHandler.mock.calls).toHaveLength(1)
-})
 
 //5.14
 test('renders everything after clicking view', async () => {
@@ -80,4 +57,30 @@ test('renders everything after clicking view', async () => {
 
   const username = screen.getByText('käyttis', { exact: false })
   expect(username).toBeDefined()
+})
+
+//5.15
+test('clicking like button twice calls event handler twice', async () => {
+  const blog = {
+    title: 'titteli',
+    author: 'tekijä',
+    url: 'osoite',
+    likes: 0,
+    user: {
+      username: 'käyttis',
+      name: 'joku',
+      password: 'salasana'
+    }
+  }
+
+  const mockHandler = vi.fn()
+
+  render(<Blog blog={blog} likeBlog={mockHandler} />)
+
+  const user = userEvent.setup()
+  const button = screen.getByText('like')
+  await user.click(button) //first click
+  await user.click(button) //second click
+
+  expect(mockHandler.mock.calls).toHaveLength(2)
 })

@@ -17,7 +17,6 @@ const Blog = ({ blog, likeBlog, removeBlog, user }) => {
     setLikesUpdate(likesUpdate + 1)
     blog.likes = likesUpdate
     await likeBlog(blog)
-    console.log(blog.likes)
   }
 
   const handleRemove = (event) => {

@@ -31,7 +31,6 @@ describe('<View />', () => {
     expect(div).not.toHaveStyle('display: none')
   })
 
-  //ei toimi
   test('viewed content can be closed', async () => {
     const user = userEvent.setup()
 

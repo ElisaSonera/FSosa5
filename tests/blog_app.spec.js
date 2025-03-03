@@ -3,8 +3,9 @@ const { loginWith, createBlog } = require('./helper')
 
 describe('Blog app', () => {
   beforeEach(async ({ page, request }) => {
-    await request.post('/api/testing/reset')
-    await request.post('/api/users', {
+    const response = await request.post('http://localhost:3003/api/testing/reset')
+    console.log(await response.text())
+    await request.post('http://localhost:3003/api/users', {
       data: {
         name: 'Matti Luukkainen',
         username: 'mluukkai',
@@ -12,21 +13,22 @@ describe('Blog app', () => {
       }
     })
 
-    await page.goto('/')
+    await page.goto('http://localhost:5173')
   })
 
-  test('front page can be opened', async ({ page }) => {
-    //const locator = await page.getByText('login')
-    //await expect(locator).toBeVisible()
+  //5.17 login nappula näkyy
+  test('front page is shown', async ({ page }) => {
     await expect(page.getByText('Log in to application')).toBeVisible()
+    await page.getByRole('button', { name: 'login' }).toBeVisible
   })
 
-  test('login form can be opened', async ({ page }) => {
+  //5.17 login lomake voidaan avata
+  test('login form is shown', async ({ page }) => {
     await page.getByRole('button', { name: 'login' }).click()
-    await page.getByTestId('username').fill('kkayttaja')
-    await page.getByTestId('password').fill('password')
+    await page.getByTestId('username').fill('mluukkai')
+    await page.getByTestId('password').fill('salainen')
     await page.getByRole('button', { name: 'login' }).click()
-    await expect(page.getByText('Kalle logged in')).toBeVisible()
+    await expect(page.getByText('Matti Luukkainen logged in')).toBeVisible()
   })
 
   test('login fails with wrong password', async ({ page }) => {

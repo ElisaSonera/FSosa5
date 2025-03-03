@@ -13,6 +13,7 @@ const loginWith = async (page, username, password)  => {
     await page.getByTestId('url').fill('osoite')
 
     await page.getByRole('button', { name: 'create' }).click()
+    await page.getByText(content, {exact: true}).first().waitFor()
   }
   
   export { loginWith, createBlog }

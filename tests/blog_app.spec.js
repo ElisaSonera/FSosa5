@@ -18,7 +18,7 @@ describe('Blog app', () => {
     await page.goto('http://localhost:5173')
   })
 
-  //5.17 kirjautumislomakkeen avaaminen ja 5.18 onnistunut kirjautuminen
+  //5.17 kirjautumislomakkeen avaaminen
   test('Login form is shown', async ({ page }) => {
     await expect(page.getByText('Log in to application')).toBeVisible() //etusivu näkyy
     await page.getByRole('button', { name: 'login' }).toBeVisible //login nappula näkyy
@@ -27,7 +27,7 @@ describe('Blog app', () => {
     await page.getByTestId('password').toBeVisible
   })
 
-  //5.18
+  //5.18 onnistunut ja epäonnistunut kirjautuminen
   describe('Login', () => {
     //onnistunut kirjautuminen
     test('succeeds with correct credentials', async ({ page }) => {
@@ -55,11 +55,11 @@ describe('Blog app', () => {
     })
   })
 
-  describe('when logged in', () => {
+  //5.19 blogi voidaan luoda
+  describe('When logged in', () => {
     beforeEach(async ({ page }) => {
       await page.getByRole('button', { name: 'login' }).click()
-      await page.getByTestId('username').fill('mluukkai')
-      await page.getByTestId('password').fill('salainen')
+      await loginWith(page, 'mluukkai', 'salainen')
       await page.getByRole('button', { name: 'login' }).click()
     })
 
@@ -74,9 +74,11 @@ describe('Blog app', () => {
 
       await expect(
         page.getByText('a new blog titteli by kirjailija')
-      ).toBeVisible()
+      ).toBeVisible() // katsotaan, että onnistumisviesti näkyy
+      await expect(page.getByText('titteli kirjailija')).toBeVisible() //katsotaan, että blogi on ilmestynyt listaan
     })
 
+    //5.20 blogia voidaan likettää
     describe('and several blogs exists', () => {
       beforeEach(async ({ page }) => {
         await createBlog(page, 'eka blogi', true)
@@ -84,12 +86,27 @@ describe('Blog app', () => {
         await createBlog(page, 'kolmas blogi', true)
       })
 
-      test('one of those can be liked', async ({ page }) => {
+      test('and one of those can be liked', async ({ page }) => {
         const otherBlogElement = await page.getByText('toka blogi')
 
-        await otherBlogElement.getByRole('button', { name: 'view' }).click()
-        await expect(otherBlogElement.getByText('like')).toBeVisible()
-        //await page.getByRole('button', { name: 'like' }).click()
+        await otherBlogElement.getByRole('button', { name: 'view' }).click() //voidaan avata view
+        await expect(otherBlogElement.getByText('like')).toBeVisible() //like nappula näkyy
+        await page.getByRole('button', { name: 'like' }).click() //like nappulaa voidaan klikata
+        await expect(page.getByText('1')).toBeVisible() // nähdään, että blogilla on yksi like
+      })
+
+      test.only('and one of those can be removed', async ({ page }) => {
+        const blogElement = page.locator('.blog', { hasText: 'kolmas blogi' }) //vältetään success messagessa esiintyvä 'kolmas blogi'
+
+        await blogElement.getByRole('button', { name: 'view' }).click()
+        await expect(
+          blogElement.getByRole('button', { name: 'remove' })
+        ).toBeVisible()
+
+        page.on('dialog', (dialog) => dialog.accept()) //hakkasin taas päätäni pöytään ennenkuin tajusin että tämän pitää olla ENNEN remove napin painamista
+        await blogElement.getByRole('button', { name: 'remove' }).click()
+
+        await expect(blogElement).not.toBeVisible()
       })
     })
   })

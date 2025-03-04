@@ -142,12 +142,36 @@ describe('Blog app', () => {
           ).not.toBeVisible()
         })
 
-              //5.23 blogit on like-järjestyksessä
-      //tässä kohtaa blogeja on 2: eka ja toka blogi
-      //joista tokalla blogilla on 1 like ja ekalla 0
-      //siten toka blogi tulisi olla listalla eka
-      })
+        //5.23 blogit on like-järjestyksessä
+        test('and blogs are in descending order by likes', async ({ page }) => {
+          //liketetään eka blogeja
+          const secondBlogElement = await page.getByText('toka blogi')
 
+          await secondBlogElement.getByRole('button', { name: 'view' }).click()
+          await expect(secondBlogElement.getByText('like')).toBeVisible()
+          await page.getByRole('button', { name: 'like' }).click()
+          await page.getByRole('button', { name: 'like' }).click()
+          await expect(page.getByText('2')).toBeVisible() // tokalla blogilla pitäisi olla nyt 2 likeä
+          await page.getByRole('button', { name: 'hide' }).click() //suljetaan view
+
+          const firstBlogElement = await page.getByText('eka blogi')
+
+          await firstBlogElement.getByRole('button', { name: 'view' }).click()
+          await expect(firstBlogElement.getByText('like')).toBeVisible()
+          await page.getByRole('button', { name: 'like' }).click()
+          await expect(page.getByText('1')).toBeVisible() // ekalla blogilla 1 like
+          
+          //kolmannelle blogille emme anna likejä, joten se tulisi olla nolla
+
+          //päivitetään sivu, jotta like järjestys päivittyy
+          await page.reload()
+
+          //testataan, että blogit ovat like järjestyksessä suurimmasta pienimpään
+          const blogList = await page.locator('.blog')
+          const expectBlogsDescending = ['toka blogi kirjailijaviewosoite2likemluukkaihide', 'eka blogi kirjailijaviewosoite1likemluukkaihide', 'kolmas blogi kirjailijaviewosoite0likemluukkaihide']
+          await expect(blogList).toHaveText(expectBlogsDescending)
+        })
+      })
     })
   })
 })

@@ -55,14 +55,26 @@ describe('Blog app', () => {
     })
   })
 
-  //5.19 blogi voidaan luoda
   describe('When logged in', () => {
-    beforeEach(async ({ page }) => {
+    beforeEach(async ({ page, request }) => {
+      //uusi käyttäjä
+
+      await request.post('http://localhost:3003/api/users', {
+        data: {
+          name: 'Toinen kayttaja',
+          username: 'tkayttaja',
+          password: 'salasana'
+        }
+      })
+
+      await page.goto('http://localhost:5173')
+
       await page.getByRole('button', { name: 'login' }).click()
       await loginWith(page, 'mluukkai', 'salainen')
       await page.getByRole('button', { name: 'login' }).click()
     })
 
+    //5.19 blogi voidaan luoda
     test('a new blog can be created', async ({ page }) => {
       await page.getByRole('button', { name: 'create new blog' }).click()
 
@@ -78,7 +90,6 @@ describe('Blog app', () => {
       await expect(page.getByText('titteli kirjailija')).toBeVisible() //katsotaan, että blogi on ilmestynyt listaan
     })
 
-    //5.20 blogia voidaan likettää
     describe('and several blogs exists', () => {
       beforeEach(async ({ page }) => {
         await createBlog(page, 'eka blogi', true)
@@ -86,6 +97,7 @@ describe('Blog app', () => {
         await createBlog(page, 'kolmas blogi', true)
       })
 
+      //5.20 blogia voidaan likettää
       test('and one of those can be liked', async ({ page }) => {
         const otherBlogElement = await page.getByText('toka blogi')
 
@@ -95,7 +107,8 @@ describe('Blog app', () => {
         await expect(page.getByText('1')).toBeVisible() // nähdään, että blogilla on yksi like
       })
 
-      test.only('and one of those can be removed', async ({ page }) => {
+      //5.21 Blogi voidaan poistaa
+      test('and one of those can be removed', async ({ page }) => {
         const blogElement = page.locator('.blog', { hasText: 'kolmas blogi' }) //vältetään success messagessa esiintyvä 'kolmas blogi'
 
         await blogElement.getByRole('button', { name: 'view' }).click()
@@ -108,6 +121,62 @@ describe('Blog app', () => {
 
         await expect(blogElement).not.toBeVisible()
       })
+
+      //5.22 vain blogin lisännyt näkee poistonapin
+      test('only owner can see remove button', async ({ page }) => {
+        //logout
+        await page.getByRole('button', { name: 'logout' }).click()
+
+        //kirjaudutaan toisena käyttäjänä
+        await page.getByRole('button', { name: 'login' }).click()
+        await loginWith(page, 'tkayttaja', 'salasana')
+
+        //avataan view ja tsekataan, että remove nappula ei näy
+        const blogElement = page.locator('.blog', { hasText: 'toka blogi' })
+        await blogElement.getByRole('button', { name: 'view' }).click()
+        await expect(
+          blogElement.getByRole('button', { name: 'remove' })
+        ).not.toBeVisible()
+      })
+
+      //5.23 blogit on like-järjestyksessä
     })
   })
 })
+
+// // 5.23 blogit näytetään like järjestyksessä
+// // tein tätä varten testiblogit testing.js
+// describe('Test blogs', () => {
+//   beforeEach(async ({ page, request }) => {
+//     const response = await request.post('http://localhost:3003/api/users', {
+//       data: {
+//         name: 'Matti Luukkainen',
+//         username: 'mluukkai',
+//         password: 'salainen'
+//       }
+//     })
+
+//     //haetaan token jotta voidaan lähettää testiblogit
+//     const token = await response.json().token
+
+//     //lähtetään testiblogit
+//     const responseBlogs = await request.post(
+//       'http://localhost:3003/api/testing/testblogs',
+//       {
+//         headers: { Authorization: `Bearer ${token}` }
+//       }
+//     )
+
+//     await page.goto('http://localhost:5173')
+
+//     //kirjaudutaan vielä sisään
+//     await page.getByRole('button', { name: 'login' }).click()
+//     await loginWith(page, 'mluukkai', 'salainen')
+//     await page.getByRole('button', { name: 'login' }).click()
+//   })
+
+//   //kokeillaan ensin, että testiblogit saatiin lähetettyä
+//   test('test blogs exist', async ({ page }) => {
+//     await expect(page.getByText('eka')).toBeVisible()
+//   })
+//  })

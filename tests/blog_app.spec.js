@@ -122,24 +122,32 @@ describe('Blog app', () => {
         await expect(blogElement).not.toBeVisible()
       })
 
-      //5.22 vain blogin lisännyt näkee poistonapin
-      test('only owner can see remove button', async ({ page }) => {
-        //logout
-        await page.getByRole('button', { name: 'logout' }).click()
+      describe('Login to different user', () => {
+        beforeEach(async ({ page }) => {
+          //logout
+          await page.getByRole('button', { name: 'logout' }).click()
 
-        //kirjaudutaan toisena käyttäjänä
-        await page.getByRole('button', { name: 'login' }).click()
-        await loginWith(page, 'tkayttaja', 'salasana')
+          //kirjaudutaan toisena käyttäjänä
+          await page.getByRole('button', { name: 'login' }).click()
+          await loginWith(page, 'tkayttaja', 'salasana')
+        })
 
-        //avataan view ja tsekataan, että remove nappula ei näy
-        const blogElement = page.locator('.blog', { hasText: 'toka blogi' })
-        await blogElement.getByRole('button', { name: 'view' }).click()
-        await expect(
-          blogElement.getByRole('button', { name: 'remove' })
-        ).not.toBeVisible()
+        //5.22 vain blogin lisännyt näkee poistonapin
+        test('only owner can see remove button', async ({ page }) => {
+          //avataan view ja tsekataan, että remove nappula ei näy
+          const blogElement = page.locator('.blog', { hasText: 'toka blogi' })
+          await blogElement.getByRole('button', { name: 'view' }).click()
+          await expect(
+            blogElement.getByRole('button', { name: 'remove' })
+          ).not.toBeVisible()
+        })
+
+              //5.23 blogit on like-järjestyksessä
+      //tässä kohtaa blogeja on 2: eka ja toka blogi
+      //joista tokalla blogilla on 1 like ja ekalla 0
+      //siten toka blogi tulisi olla listalla eka
       })
 
-      //5.23 blogit on like-järjestyksessä
     })
   })
 })

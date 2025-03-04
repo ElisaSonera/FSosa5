@@ -3,7 +3,9 @@ const { loginWith, createBlog } = require('./helper')
 
 describe('Blog app', () => {
   beforeEach(async ({ page, request }) => {
-    const response = await request.post('http://localhost:3003/api/testing/reset')
+    const response = await request.post(
+      'http://localhost:3003/api/testing/reset'
+    )
     console.log(await response.text())
     await request.post('http://localhost:3003/api/users', {
       data: {
@@ -16,38 +18,41 @@ describe('Blog app', () => {
     await page.goto('http://localhost:5173')
   })
 
-  //5.17 login nappula näkyy
-  test('front page is shown', async ({ page }) => {
-    await expect(page.getByText('Log in to application')).toBeVisible()
-    await page.getByRole('button', { name: 'login' }).toBeVisible
+  //5.17 kirjautumislomakkeen avaaminen ja 5.18 onnistunut kirjautuminen
+  test('Login form is shown', async ({ page }) => {
+    await expect(page.getByText('Log in to application')).toBeVisible() //etusivu näkyy
+    await page.getByRole('button', { name: 'login' }).toBeVisible //login nappula näkyy
+    await page.getByRole('button', { name: 'login' }).click() //login nappulaa voidaan klikata
+    await page.getByTestId('username').toBeVisible //varmistetaan että kirjautumislomake on auennut
+    await page.getByTestId('password').toBeVisible
   })
 
-  //5.17 login lomake voidaan avata
-  test('login form is shown', async ({ page }) => {
-    await page.getByRole('button', { name: 'login' }).click()
-    await page.getByTestId('username').fill('mluukkai')
-    await page.getByTestId('password').fill('salainen')
-    await page.getByRole('button', { name: 'login' }).click()
-    await expect(page.getByText('Matti Luukkainen logged in')).toBeVisible()
-  })
+  //5.18
+  describe('Login', () => {
+    //onnistunut kirjautuminen
+    test('succeeds with correct credentials', async ({ page }) => {
+      await page.getByRole('button', { name: 'login' }).click() //login nappulaa voidaan klikata
+      await loginWith(page, 'mluukkai', 'salainen') //loginform on auennut ja pystytään antamaan käyttäjätiedot
+      await page.getByRole('button', { name: 'login' }).click() //login nappulaa voidaan jälleen klikata
+      await expect(page.getByText('Matti Luukkainen logged in')).toBeVisible() //kirjautumisen onnistumisteksti näkyy
+    })
 
-  test('login fails with wrong password', async ({ page }) => {
-    await page.getByRole('button', { name: 'login' }).click()
-    await page.getByTestId('username').fill('mluukkai')
-    await page.getByTestId('password').fill('wrong')
-    await page.getByRole('button', { name: 'login' }).click()
+    //epäonnistunut kirjautuminen
+    test('fails with wrong credentials', async ({ page }) => {
+      //kirjaudutaan väärällä salasanalla
+      await page.getByRole('button', { name: 'login' }).click()
+      await loginWith(page, 'mluukkai', 'wrong') //annetaan väärä salasana
+      await page.getByRole('button', { name: 'login' }).click()
 
-    const errorDiv = await page.locator('.error')
-    await expect(errorDiv).toContainText('wrong credentials')
-    await expect(errorDiv).toHaveCSS('border-style', 'solid')
-    await expect(errorDiv).toHaveCSS('color', 'rgb(255, 0, 0)')
-
-    await expect(page.getByText('Matti Luukkainen logged in')).not.toBeVisible()
-  })
-
-  test('user can log in', async ({ page }) => {
-    await loginWith(page, 'mluukkai', 'salainen')
-    await expect(page.getByText('Matti Luukkainen logged in')).toBeVisible()
+      //sivu näyttää virheilmoituksen
+      const errorDiv = await page.locator('.error')
+      await expect(errorDiv).toContainText('wrong credentials')
+      await expect(errorDiv).toHaveCSS('border-style', 'solid')
+      await expect(errorDiv).toHaveCSS('color', 'rgb(255, 0, 0)')
+      await expect(
+        page.getByText('Matti Luukkainen logged in')
+      ).not.toBeVisible()
+    })
   })
 
   describe('when logged in', () => {

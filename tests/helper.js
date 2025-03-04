@@ -13,7 +13,7 @@ const loginWith = async (page, username, password)  => {
     await page.getByTestId('url').fill('osoite')
 
     await page.getByRole('button', { name: 'create' }).click()
-    await page.getByText(content, {exact: true}).first().waitFor()
+    await page.getByText(content, {exact: false}).first().waitFor() //First koska eri selainten takia tietokantaan ilmeisesti ilmaantuu useampi saman niminen blogi
   }
   
   export { loginWith, createBlog }

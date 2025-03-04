@@ -32,10 +32,15 @@ app.use('/api/users', usersRouter)
 app.use('/api/login', loginRouter)
 
 // Jostain syystä ei toimi tällä ehtolauseella?
+// hakkasin päätä seinään pari tuntia, 
+// eikä silti selvinnyt että mistä mättää
+// Kysyin myös TKTL Full Stack kanavalta, mutta apua ei herunut
 // if (process.env.NODE_ENV === 'test') {
 //   const testingRouter = require('./controllers/testing')
 //   app.use('/api/testing', testingRouter)
 // }
+// toimii kuitenkin ilman ehtoa
+// siksi päätin lopulta vain jättää ehtolauseen pois
 
 const testingRouter = require('./controllers/testing')
 app.use('/api/testing', testingRouter)

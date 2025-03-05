@@ -122,55 +122,55 @@ describe('Blog app', () => {
         await expect(blogElement).not.toBeVisible()
       })
 
-      describe('Login to different user', () => {
-        beforeEach(async ({ page }) => {
-          //logout
-          await page.getByRole('button', { name: 'logout' }).click()
+      //5.22 vain blogin lisännyt näkee poistonapin
+      test('only owner can see remove button', async ({ page }) => {
+        //logout
+        await page.getByRole('button', { name: 'logout' }).click()
 
-          //kirjaudutaan toisena käyttäjänä
-          await page.getByRole('button', { name: 'login' }).click()
-          await loginWith(page, 'tkayttaja', 'salasana')
-        })
+        //kirjaudutaan toisena käyttäjänä
+        await page.getByRole('button', { name: 'login' }).click()
+        await loginWith(page, 'tkayttaja', 'salasana')
 
-        //5.22 vain blogin lisännyt näkee poistonapin
-        test('only owner can see remove button', async ({ page }) => {
-          //avataan view ja tsekataan, että remove nappula ei näy
-          const blogElement = page.locator('.blog', { hasText: 'toka blogi' })
-          await blogElement.getByRole('button', { name: 'view' }).click()
-          await expect(
-            blogElement.getByRole('button', { name: 'remove' })
-          ).not.toBeVisible()
-        })
+        //avataan view ja tsekataan, että remove nappula ei näy
+        const blogElement = page.locator('.blog', { hasText: 'toka blogi' })
+        await blogElement.getByRole('button', { name: 'view' }).click()
+        await expect(
+          blogElement.getByRole('button', { name: 'remove' })
+        ).not.toBeVisible()
+      })
 
-        //5.23 blogit on like-järjestyksessä
-        test('and blogs are in descending order by likes', async ({ page }) => {
-          //liketetään eka blogeja
-          const secondBlogElement = await page.getByText('toka blogi')
+      //5.23 blogit on like-järjestyksessä
+      test('and blogs are in descending order by likes', async ({ page }) => {
+        //liketetään eka blogeja
+        const secondBlogElement = await page.getByText('toka blogi')
 
-          await secondBlogElement.getByRole('button', { name: 'view' }).click()
-          await expect(secondBlogElement.getByText('like')).toBeVisible()
-          await page.getByRole('button', { name: 'like' }).click()
-          await page.getByRole('button', { name: 'like' }).click()
-          await expect(page.getByText('2')).toBeVisible() // tokalla blogilla pitäisi olla nyt 2 likeä
-          await page.getByRole('button', { name: 'hide' }).click() //suljetaan view
+        await secondBlogElement.getByRole('button', { name: 'view' }).click()
+        await expect(secondBlogElement.getByText('like')).toBeVisible()
+        await page.getByRole('button', { name: 'like' }).click()
+        await page.getByRole('button', { name: 'like' }).click()
+        await expect(page.getByText('2')).toBeVisible() // tokalla blogilla pitäisi olla nyt 2 likeä
+        await page.getByRole('button', { name: 'hide' }).click() //suljetaan view
 
-          const firstBlogElement = await page.getByText('eka blogi')
+        const firstBlogElement = await page.getByText('eka blogi')
 
-          await firstBlogElement.getByRole('button', { name: 'view' }).click()
-          await expect(firstBlogElement.getByText('like')).toBeVisible()
-          await page.getByRole('button', { name: 'like' }).click()
-          await expect(page.getByText('1')).toBeVisible() // ekalla blogilla 1 like
-          
-          //kolmannelle blogille emme anna likejä, joten se tulisi olla nolla
+        await firstBlogElement.getByRole('button', { name: 'view' }).click()
+        await expect(firstBlogElement.getByText('like')).toBeVisible()
+        await page.getByRole('button', { name: 'like' }).click()
+        await expect(page.getByText('1')).toBeVisible() // ekalla blogilla 1 like
 
-          //päivitetään sivu, jotta like järjestys päivittyy
-          await page.reload()
+        //kolmannelle blogille emme anna likejä, joten se tulisi olla nolla
 
-          //testataan, että blogit ovat like järjestyksessä suurimmasta pienimpään
-          const blogList = await page.locator('.blog')
-          const expectBlogsDescending = ['toka blogi kirjailijaviewosoite2likemluukkaihide', 'eka blogi kirjailijaviewosoite1likemluukkaihide', 'kolmas blogi kirjailijaviewosoite0likemluukkaihide']
-          await expect(blogList).toHaveText(expectBlogsDescending)
-        })
+        //päivitetään sivu, jotta like järjestys päivittyy
+        await page.reload()
+
+        //testataan, että blogit ovat like järjestyksessä suurimmasta pienimpään
+        const blogList = await page.locator('.blog')
+        const expectBlogsDescending = [
+          'toka blogi kirjailijaviewosoite2likemluukkairemovehide',
+          'eka blogi kirjailijaviewosoite1likemluukkairemovehide',
+          'kolmas blogi kirjailijaviewosoite0likemluukkairemovehide'
+        ]
+        await expect(blogList).toHaveText(expectBlogsDescending)
       })
     })
   })
